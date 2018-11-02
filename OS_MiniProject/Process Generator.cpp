@@ -71,8 +71,8 @@ int main(int argc, char* argv[]) {
 
 	for (int i = 1; i <= processCount; ++i)
 	{
-		arrivalTime = arrivalTimeGenerator(arrivalEngine);
-		burstTime = burstTimeGenerator(burstEngine);
+		arrivalTime = abs(arrivalTimeGenerator(arrivalEngine));
+		burstTime = abs(burstTimeGenerator(burstEngine));
 		priority = priorityGenerator(priorityEngine);
 
 

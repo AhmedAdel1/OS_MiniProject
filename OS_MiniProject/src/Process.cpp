@@ -6,72 +6,72 @@ Process::Process()
 }
 
 /// Getters
-unsigned long getProcessID()
+unsigned long Process::getProcessID()
 {
     return processID;
 }
 
-char getState()
+char Process::getState()
 {
     return state;
 }
 
-unsigned long getPriority()
+double Process::getPriority()
 {
     return priority;
 }
 
-unsigned long getArrivalTime()
+double Process::getArrivalTime()
 {
     return arrivalTime;
 }
 
-unsigned long getBurstTime()
+double Process::getBurstTime()
 {
     return burstTime;
 }
 
 
 /// Setters
-void setProcessID(unsigned long ID)
+void Process::setProcessID(unsigned long ID)
 {
-    this.processID = ID;
+    processID = ID;
 }
 
-void setPriority(unsigned long pr)
+void Process::setPriority(double pr)
 {
-    this.priority = pr;
+    priority = pr;
 }
 
-void setArrivalTime(unsigned long arTime)
+void Process::setArrivalTime(double arTime)
 {
-    this.arrivalTime = arTime;
+    arrivalTime = arTime;
 }
 
-void setBurstTime(unsigned long brTime)
+void Process::setBurstTime(double brTime)
 {
-    this.burstTime = brTime;
+    burstTime = brTime;
 }
 
 /// changing states
-void Block()           /// move from RUNNING state to BLOCKED state.
+void Process::Block()           /// move from RUNNING state to BLOCKED state.
 {
-    this.state = BLOCKED;
+    state = BLOCKED;
 }
 
-void Awaken()          /// move from BLOCKED state to READY state.
+void Process::Awaken()          /// move from BLOCKED state to READY state.
 {
-    this.state = READY;
+    state = READY;
 }
 
-void Switch()          /// move from RUNNING state to READY state.
+void Process::Switch()          /// move from RUNNING state to READY state.
 {
-    this.state = READY;
+    state = READY;
 }
 
-void Schedule()        /// move from READY state to RUNNING state.
+void Process::Schedule()        /// move from READY state to RUNNING state.
 {
-    this.state = RUNNING;
+    state = RUNNING;
 }
 
 Process::~Process()

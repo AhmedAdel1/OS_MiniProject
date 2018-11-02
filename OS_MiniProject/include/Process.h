@@ -20,16 +20,16 @@ class Process
         /// Getters
         unsigned long getProcessID();
         char getState();
-        unsigned long getPriority();
-        unsigned long getArrivalTime();
-        unsigned long getBurstTime();
+        double getPriority();
+        double getArrivalTime();
+        double getBurstTime();
 
 
         /// Setters
         void setProcessID(unsigned long);
-        void setPriority(unsigned long);
-        void setArrivalTime(unsigned long);
-        void setBurstTime(unsigned long);
+        void setPriority(double);
+        void setArrivalTime(double);
+        void setBurstTime(double);
 
         /// changing states
         void Block();           /// move from RUNNING state to BLOCKED state.
@@ -42,9 +42,9 @@ class Process
     private:
         unsigned long processID;
         char state;
-        unsigned long priority;
-        unsigned long arrivalTime;
-        unsigned long burstTime;            /// time required for process to run.
+        double priority;
+        double arrivalTime;
+        double burstTime;            /// time required for process to run.
 };
 
 #endif // PROCESS_H

@@ -9,9 +9,11 @@ void HPFScheduler::schedule(Process* processes[], int count,
 	this->contextTime = contextTime;	//set context switch time
 
 	//sort ready queue by arrival time (equivalent to real arrival system, when it arrives, it's inserted)
-	sort(readyQueue.begin(),
-			readyQueue.end(), //note that it's sorted in reversed order, so I can pop from back
-			[](const auto p1, const auto p2) {return p1->getArrivalTime() > p2->getArrivalTime();});
+	//sort(readyQueue.begin(),
+	//		readyQueue.end(), //note that it's sorted in reversed order, so I can pop from back
+	//		[](const auto p1, const auto p2) {return p1->getArrivalTime() > p2->getArrivalTime();});
+
+    /// when uncommenting these lines, an error occurs : invalid use of 'auto'
 
 	unsigned long currentProcessID = 0;
 	while (!pq.empty()) //remove old values from priority queue ( if there's any )

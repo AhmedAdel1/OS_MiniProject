@@ -1,11 +1,15 @@
 #include <iostream>
 #include <fstream>
-#include "process.h"
+#include <math.h>
+#include "Process.h"
+#include "FCFS_Scheduler.h"
+#include "SRTN_Scheduler.h"
 
 
 using namespace std;
 
 void getProcesses(Process* arr,unsigned long Size,ifstream& myFile);
+bool comp(Process p1, Process p2);
 
 int main(int argc, char** argv)
 {
@@ -22,6 +26,11 @@ int main(int argc, char** argv)
     for(unsigned long i =0; i<Size; i++)
         cout << arr[i].getProcessID() << "\t" << arr[i].getArrivalTime() << "\t" << arr[i].getBurstTime() << "\t" << arr[i].getPriority() << "\t" << endl;
 
+    std::sort(arr,arr+Size,comp);
+
+    ///FCFS_Scheduler FCFS(arr,Size);
+    SRTN_Scheduler FCFS(arr,Size);
+
     return 0;
 }
 
@@ -34,8 +43,14 @@ void getProcesses(Process* arr,unsigned long Size,ifstream& myFile)
         myFile >> prID >> arrivTime >> bursTime >> prior;
 
         arr[i].setProcessID(prID);
-        arr[i].setArrivalTime(arrivTime);
-        arr[i].setBurstTime(bursTime);
+        arr[i].setArrivalTime((int)round(arrivTime));
+        arr[i].setBurstTime((int)round(bursTime));
+        arr[i].setRemainingTime((int)round(bursTime));
         arr[i].setPriority(prior);
     }
+}
+
+bool comp(Process p1, Process p2)
+{
+    return (p1.getArrivalTime() < p2.getArrivalTime());
 }

@@ -22,15 +22,17 @@ class Process
         unsigned long getProcessID();
         char getState();
         double getPriority();
-        double getArrivalTime();
-        double getBurstTime();
+        unsigned int getArrivalTime();
+        unsigned int getBurstTime();
+        unsigned int getRemainingTime();
 
 
         /// Setters
         void setProcessID(unsigned long);
         void setPriority(double);
-        void setArrivalTime(double);
-        void setBurstTime(double);
+        void setArrivalTime(unsigned int);
+        void setBurstTime(unsigned int);
+        void setRemainingTime(unsigned int);
 
         /// changing states
         void Block();           /// move from RUNNING state to BLOCKED state.
@@ -44,8 +46,11 @@ class Process
         unsigned long processID;
         char state;
         double priority;
-        double arrivalTime;
-        double burstTime;            /// time required for process to run.
+        unsigned int arrivalTime;
+        unsigned int burstTime;            /// time required for process to run.
+        unsigned int remainingTime;        /// the remaining run time for the process.
+
+
 };
 
 #endif // PROCESS_H

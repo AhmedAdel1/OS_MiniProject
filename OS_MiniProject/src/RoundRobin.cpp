@@ -3,81 +3,150 @@
 RoundRobinScheduler::RoundRobinScheduler() {
 }
 
-void RoundRobinScheduler::schedule(Process* processes[], int count,
-		double contextTime, double quantumTime) {
+Statistics RoundRobinScheduler::schedule(Process arr[], int count,double contextTime,double quantumTime) {
+
+	myStatistics.clearStatistics();
+
+	if (count <= 0)
+		return myStatistics;
+
+	//set context switch time
+	this->contextTime = contextTime;
+
+	//Create a copy from processes using pointers, to make operations faster
+	Process** processes = new Process*[count];
+	for (int i = 0; i < count; ++i) {
+		processes[i] = new Process;
+		processes[i]->setProcessID(arr[i].getProcessID());
+		processes[i]->setArrivalTime(arr[i].getArrivalTime());
+		processes[i]->setBurstTime(arr[i].getBurstTime());
+		processes[i]->setPriority(arr[i].getPriority());
+	}
+
+	scheduleUtility(processes, count, contextTime,quantumTime);
+
+	vector<double> turnAround = myStatistics.getTurnaroundTime();
+	vector<double> waitingTime(count);
+	vector<double> weightedWaitingTime(count);
+
+	double avgWeightedWaitingTime = 0;
+	double avgTurnAroundTime = 0;
+
+	for (int i = 0; i < count; ++i) {
+
+		//Waiting Time = TurnAround - Arrival Time
+		waitingTime[i] = turnAround[i] - arr[i].getArrivalTime();
+
+		//Weighted Waiting Time = (Waiting Time)/(Running Time)
+		weightedWaitingTime[i] = waitingTime[i]/arr[i].getBurstTime();
+
+
+		avgWeightedWaitingTime += weightedWaitingTime[i];
+
+		avgTurnAroundTime += turnAround[i];
+	}
+
+	avgTurnAroundTime /= count;
+	avgWeightedWaitingTime /= count;
+
+	myStatistics.setWaitingTime(waitingTime);
+	myStatistics.setWeightedWaitingTime(weightedWaitingTime);
+	myStatistics.setAvgTurnaroundTime(avgTurnAroundTime);
+	myStatistics.setAvgWeightedWaitingTime(avgWeightedWaitingTime);
+
+	//Clean up
+	for (int i = 0; i < count; ++i)
+		delete processes[i];
+	delete processes;
+
+	return myStatistics;
+}
+
+void RoundRobinScheduler::scheduleUtility(Process* processes[], int count,double contextTime, double quantumTime) {
 	readyQueue.assign(processes, processes + count); //fill ready queue with the processes
-	this->contextTime = contextTime;	//set context switch time
+
+	//Turn around for statistics
+	vector<double> turnAround(count);
+	//Graph Intervals for plotting
+	vector<Interval> graphIntervals;
 
 	//sort ready queue by arrival time (equivalent to real arrival system, when it arrives, it's inserted)
-	sort(readyQueue.begin(),
-			readyQueue.end(), //note that it's sorted in reversed order, so I can pop from back
-			[](const auto p1, const auto p2) {return p1->getArrivalTime() > p2->getArrivalTime();});
+	//note that it's sorted in reversed order, so I can pop from back
+	sort(readyQueue.begin(), readyQueue.end(),
+			[](const auto p1, const auto p2) {
+				if(p1->getArrivalTime() != p2->getArrivalTime())
+				return p1->getArrivalTime() > p2->getArrivalTime();
+				else
+				return p1->getProcessID() > p2->getProcessID();
+			});
 
 	unsigned long currentProcessID = 0;
-	while (!deq.empty()) //remove old values from queue ( if there's any )
-		deq.pop_back();
-
-	auto prevClock = clock(); //reference to get time between operations
+	while (!q.empty()) //remove old values from queue ( if there's any )
+		q.pop();
 
 	double currentTime = 0; //current time stamp
 	double inCPUTime = 0; //how long this process is being processed
-	while (!deq.empty() || !readyQueue.empty()) {
-		if (!readyQueue.empty()&& currentTime > readyQueue.back()->getArrivalTime()) //if elements arrived at ready queue
-		{
-			deq.push_back(readyQueue.back());
+	while (!q.empty() || !readyQueue.empty()) {
+		if (!readyQueue.empty()
+				&& currentTime > readyQueue.back()->getArrivalTime()) //if elements arrived at ready queue
+						{
+			q.push(readyQueue.back());
 			readyQueue.pop_back();
 		}
 
-		if (!deq.empty()) { //there's element to be scheduled
-			if (currentProcessID == deq.front()->getProcessID()) { //current process is under scheduling
+		if (!q.empty()) { //there's element to be scheduled
+			if (currentProcessID == q.front()->getProcessID()) { //current process is under scheduling
 
-				double elapsedTime = getTime(clock(), prevClock); //how long the process was in cpu
+				currentTime += TIMESTAMP;
+				inCPUTime += TIMESTAMP;
 
-				inCPUTime += elapsedTime;
-
-				Process* currentProcess = deq.front();
+				Process* currentProcess = q.front();
 
 				//TODO print current process on graph
-				currentTime += getTime(clock(), prevClock);
 
-				prevClock = clock();
 
-				//if time quantum is finished, or the process is finished, remove it from dequeue
+				//if time quantum is finished, or the process is finished, remove it from queue
 				//if there's only this process in quantum, leave it unless it's finished
-				if (deq.size() > 1 && inCPUTime >= quantumTime || elapsedTime >= currentProcess->getBurstTime()) {
-					deq.pop_front();
-					while (!deq.empty() && getTime(clock(), prevClock) < (this->contextTime)) { //wait for context switch
-						//TODO print context switch on graph
+				if (q.size() > 1 && inCPUTime >= quantumTime || currentProcess->getBurstTime() <= 0) {
+					q.pop();
 
+					Interval processInterval(currentTime - inCPUTime,currentTime, currentProcessID);
+					graphIntervals.push_back(processInterval);
+
+					//if the process isn't done yet, push it in the back
+					if (currentProcess->getBurstTime() > 0) {
+						currentProcess->setBurstTime(currentProcess->getBurstTime() - TIMESTAMP);
+						q.push(currentProcess);
+					}
+					else{
+						turnAround[currentProcessID-1] = currentTime - currentProcess->getArrivalTime();
+					}
+
+					double contextElapsedTime = 0;
+
+					//wait for context switch
+					while (!q.empty() && contextElapsedTime < contextTime) {
+						contextElapsedTime += TIMESTAMP;
+						currentTime += TIMESTAMP;
 					}
 					currentProcessID = 0;
-					currentTime += getTime(clock(), prevClock);
-					if (elapsedTime < currentProcess->getBurstTime()) { //if the process isn't done yet, push it in the back
-						currentProcess->setBurstTime(currentProcess->getBurstTime() - elapsedTime);
-						deq.push_back(currentProcess);
-					}
+
 				} else { //update needed time
-					currentProcess->setBurstTime(currentProcess->getBurstTime() - elapsedTime);
+					currentProcess->setBurstTime(currentProcess->getBurstTime() - TIMESTAMP);
 				}
 
-				prevClock = clock();
 			} else { //start processing another process
-				currentProcessID = deq.front()->getProcessID();
-				currentTime += getTime(clock(), prevClock);
-				prevClock = clock();
+				currentProcessID = q.front()->getProcessID();
+				currentTime += TIMESTAMP;
 				inCPUTime = 0;
 			}
 
 		} else { //wait for new process to arrive
-			currentTime += getTime(clock(), prevClock);
-			prevClock = clock();
+			currentTime += TIMESTAMP;
 		}
 	}
 
-
+	myStatistics.setGraphIntervals(graphIntervals);
+	myStatistics.setTurnaroundTime(turnAround);
 }
 
-//Get time between clock c1 and c2 (c1>c2)
-inline double RoundRobinScheduler::getTime(const clock_t& c1,const clock_t& c2) {
-	return (c1 - c2) / (1.0 * CLOCKS_PER_SEC);
-}

@@ -1,29 +1,101 @@
 #include "HPFScheduler.h"
 
-HPFScheduler::HPFScheduler() {}
+HPFScheduler::HPFScheduler() {
+}
+
+Statistics HPFScheduler::schedule(Process arr[], int count,double contextTime) {
+
+	myStatistics.clearStatistics();
+
+	if (count <= 0)
+		return myStatistics;
+
+	//set context switch time
+	this->contextTime = contextTime;
+
+	//Create a copy from processes using pointers, to make operations faster
+	Process** processes = new Process*[count];
+	for (int i = 0; i < count; ++i) {
+		processes[i] = new Process;
+		processes[i]->setProcessID(arr[i].getProcessID());
+		processes[i]->setArrivalTime(arr[i].getArrivalTime());
+		processes[i]->setBurstTime(arr[i].getBurstTime());
+		processes[i]->setPriority(arr[i].getPriority());
+	}
+
+	scheduleUtility(processes, count, contextTime);
+
+	vector<double> turnAround = myStatistics.getTurnaroundTime();
+	vector<double> waitingTime(count);
+	vector<double> weightedWaitingTime(count);
+
+	double avgWeightedWaitingTime = 0;
+	double avgTurnAroundTime = 0;
+
+	for (int i = 0; i < count; ++i) {
+
+		//Waiting Time = TurnAround - Arrival Time
+		waitingTime[i] = turnAround[i] - arr[i].getArrivalTime();
+
+		//Weighted Waiting Time = (Waiting Time)/(Running Time)
+		weightedWaitingTime[i] = waitingTime[i]/arr[i].getBurstTime();
 
 
-void HPFScheduler::schedule(Process* processes[], int count,
+		avgWeightedWaitingTime += weightedWaitingTime[i];
+
+		avgTurnAroundTime += turnAround[i];
+	}
+
+	avgTurnAroundTime /= count;
+	avgWeightedWaitingTime /= count;
+
+	myStatistics.setWaitingTime(waitingTime);
+	myStatistics.setWeightedWaitingTime(weightedWaitingTime);
+	myStatistics.setAvgTurnaroundTime(avgTurnAroundTime);
+	myStatistics.setAvgWeightedWaitingTime(avgWeightedWaitingTime);
+
+	//Clean up
+	for (int i = 0; i < count; ++i)
+		delete processes[i];
+	delete processes;
+
+	return myStatistics;
+}
+
+void HPFScheduler::scheduleUtility(Process* processes[], int count,
 		double contextTime) {
-	readyQueue.assign(processes, processes + count); //fill ready queue with the processes
-	this->contextTime = contextTime;	//set context switch time
+	//clear ready queue and fill it with the processes
+	readyQueue.assign(processes, processes + count);
+
+	//Turn around for statistics
+	vector<double> turnAround(count);
+	//Graph Intervals for plotting
+	vector<Interval> graphIntervals;
 
 	//sort ready queue by arrival time (equivalent to real arrival system, when it arrives, it's inserted)
-	sort(readyQueue.begin(),
-			readyQueue.end(), //note that it's sorted in reversed order, so I can pop from back
-			[](const auto p1, const auto p2) {return p1->getArrivalTime() > p2->getArrivalTime();});
+	//note that it's sorted in reversed order, so I can pop from back
+	sort(readyQueue.begin(), readyQueue.end(),
+			[](const auto p1, const auto p2) {
+				if(p1->getArrivalTime() != p2->getArrivalTime())
+				return p1->getArrivalTime() > p2->getArrivalTime();
+				else
+				return p1->getProcessID() > p2->getProcessID();
+			});
 
 	unsigned long currentProcessID = 0;
 	while (!pq.empty()) //remove old values from priority queue ( if there's any )
 		pq.pop();
 
-	auto prevClock = clock(); //reference to get time between operations
-
 	double currentTime = 0; //current time stamp
 
+	//current process reference
+	Process* currentProcess = NULL;
+
+	double inCPUTime = 0; //how long this process is being processed
 	while (!pq.empty() || !readyQueue.empty()) {
-		if (!readyQueue.empty()&& currentTime > readyQueue.back()->getArrivalTime()) //if elements arrived at ready queue
-		{
+		if (!readyQueue.empty()
+				&& currentTime > readyQueue.back()->getArrivalTime()) //if elements arrived at ready queue
+						{
 			pq.push(readyQueue.back());
 			readyQueue.pop_back();
 		}
@@ -31,37 +103,58 @@ void HPFScheduler::schedule(Process* processes[], int count,
 		if (!pq.empty()) { //there's element to be scheduled
 			if (currentProcessID == pq.top()->getProcessID()) { //current process is under scheduling(no one arrived with higher priority)
 
-				double elapsedTime = getTime(clock(), prevClock); //how long the process was in cpu
+				currentProcess = pq.top();
 
-				Process* currentProcess = pq.top();
+				currentTime += TIMESTAMP;
+				inCPUTime += TIMESTAMP;
 
-				//TODO print current process on graph
-				currentTime += getTime(clock(), prevClock);
-				prevClock = clock();
+				//if the process is done, remove it from cpu
+				if (currentProcess->getBurstTime() <= 0) {
 
-				if (elapsedTime >= currentProcess->getBurstTime()) { //if the process is done, remove it from cpu
+					turnAround[currentProcessID - 1] = currentTime
+							- currentProcess->getArrivalTime();
 					pq.pop();
+
+					Interval processInterval = Interval(currentTime - inCPUTime,
+							currentTime, currentProcessID);
+					graphIntervals.push_back(processInterval);
+
+					//Context switch
+					double contextElapsedTime = 0;
+					while (contextElapsedTime < contextTime) {
+						contextElapsedTime += TIMESTAMP;
+						currentTime += TIMESTAMP;
+					}
+					currentProcessID = 0;
 				} else { //the process run for some time, decrease needed time
-					currentProcess->setBurstTime(currentProcess->getBurstTime() - elapsedTime);
+					currentProcess->setBurstTime(
+							currentProcess->getBurstTime() - TIMESTAMP);
+					currentTime += TIMESTAMP;
 				}
 
-			} else { //Context switch
-				while (currentProcessID != 0
-						&& getTime(clock(), prevClock) < (this->contextTime)) { //wait for context switch
-					//TODO print context switch on graph
+			} else {
+				//you took another process place
+				if (currentProcessID != 0) {
+					Interval processInterval = Interval(currentTime - inCPUTime,
+							currentTime, currentProcessID);
+					graphIntervals.push_back(processInterval);
+					//Context switch
+					double contextElapsedTime = 0;
+					while (contextElapsedTime < contextTime) {
+						contextElapsedTime += TIMESTAMP;
+						currentTime += TIMESTAMP;
+					}
 				}
+				inCPUTime = 0;
 				currentProcessID = pq.top()->getProcessID();
-				currentTime += getTime(clock(), prevClock);
-				prevClock = clock();
+				currentTime += TIMESTAMP;
 			}
 		} else { //wait for new process to arrive
-			currentTime += getTime(clock(), prevClock);
-			prevClock = clock();
+			currentTime += TIMESTAMP;
 		}
 	}
+
+	myStatistics.setTurnaroundTime(turnAround);
+	myStatistics.setGraphIntervals(graphIntervals);
 }
 
-//Get time between clock c1 and c2 (c1>c2)
-inline double HPFScheduler::getTime(const clock_t& c1, const clock_t& c2) {
-	return (c1 - c2) / (1.0 * CLOCKS_PER_SEC);
-}

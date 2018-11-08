@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <deque>
+#include <queue>
 #include <algorithm>
 #include <chrono>
 #include "Process.h"
-
+#include "Statistics.h"
 using namespace std;
 
 #ifndef RoundRobinScheduler_H
@@ -14,18 +14,23 @@ class RoundRobinScheduler {
 
 public:
 	RoundRobinScheduler();
-	void schedule(Process* processes[], int count, double contextTime,double quantumTime); //TODO add GUI reference
+	Statistics schedule(Process processes[], int count, double contextTime,double quantumTime);
 
 private:
+	//Utility function that does scheduling
+	void scheduleUtility(Process* processes[], int count, double contextTime,double quantumTime);
+
+	//Time for transition between processes
 	double contextTime;
-	double quantumTime;
+
+	//Queue holds processes when it arrives
 	vector<Process*> readyQueue;
 
-	//utility function to get time between 2 clocks
-	inline double getTime(const clock_t& c1, const clock_t& c2);
+	//Statistics about scheduler
+	Statistics myStatistics;
 
 	//current process in front, new process in back
-	deque<Process*> deq;
+	queue<Process*> q;
 
 };
 

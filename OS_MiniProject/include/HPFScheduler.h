@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <chrono>
 #include "Process.h"
-
+#include "Statistics.h"
 using namespace std;
 
 #ifndef HPFScheduler_H
@@ -15,14 +15,21 @@ class HPFScheduler {
 
 public:
 	HPFScheduler();
-	void schedule(Process* processes[], int count, double contextTime); //TODO add GUI reference
+	Statistics schedule(Process processes[], int count, double contextTime);
+
 
 private:
+	//Utility function that does scheduling
+	void scheduleUtility(Process* processes[], int count, double contextTime);
+
+	//Time for transition between processes
 	double contextTime;
+
+	//Queue holds processes when it arrives
 	vector<Process*> readyQueue;
 
-	//utility function to get time between 2 clocks
-	inline double getTime(const clock_t& c1, const clock_t& c2);
+	//Statistics about scheduler
+	Statistics myStatistics;
 
 	//comparator that priority queue will sort with
 	struct PriorityComparator {

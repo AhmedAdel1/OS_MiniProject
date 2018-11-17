@@ -36,6 +36,19 @@ void Statistics::setGraphIntervals(const vector<Interval>& graphIntervals) {
 	this->graphIntervals = graphIntervals;
 }
 
+
+const vector<processInfo>& Statistics::getProcInfoVector() const
+{
+    return procInfoVector;
+}
+
+void Statistics::setProcInfoVector(const vector<processInfo>& processInfoVec)
+{
+    this->procInfoVector = processInfoVec;
+}
+
+
+
 const vector<double>& Statistics::getTurnaroundTime() const {
 	return turnaroundTime;
 }

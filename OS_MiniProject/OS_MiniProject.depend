@@ -1,55 +1,79 @@
 # depslib dependency file v1.0
-1541470723 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\main.cpp
+1542435532 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\main.cpp
 	<iostream>
 	<fstream>
 	<math.h>
+	<vector>
 	"Process.h"
+	"Interval.h"
 	"FCFS_Scheduler.h"
 	"SRTN_Scheduler.h"
+	"Statistics.h"
 
-1541467946 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\process.h
+1542431620 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\process.h
 
-1541468069 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\process.cpp
+1542431513 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\process.cpp
 	"Process.h"
 
-1541458323 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\roundrobin.cpp
+1542421072 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\roundrobin.cpp
 	"RoundRobin.h"
 
-1541378012 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\roundrobin.h
+1542421072 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\roundrobin.h
 	<iostream>
 	<vector>
-	<deque>
+	<queue>
 	<algorithm>
 	<chrono>
 	"Process.h"
+	"Statistics.h"
 
-1541458466 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\hpfscheduler.cpp
+1542421072 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\hpfscheduler.cpp
 	"HPFScheduler.h"
 
-1541378012 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\hpfscheduler.h
+1542421072 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\hpfscheduler.h
 	<iostream>
 	<vector>
 	<queue>
 	<algorithm>
 	<chrono>
 	"Process.h"
+	"Statistics.h"
 
-1541458588 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\srtn_scheduler.cpp
+1542436179 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\srtn_scheduler.cpp
 	"SRTN_Scheduler.h"
 
-1541469379 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\srtn_scheduler.h
+1542435492 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\srtn_scheduler.h
 	<iostream>
 	<queue>
 	<algorithm>
 	<vector>
 	"Process.h"
+	"processInfo.h"
+	"Statistics.h"
+	"Interval.h"
 
-1541466755 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\fcfs_scheduler.cpp
+1542433756 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\fcfs_scheduler.cpp
 	"FCFS_Scheduler.h"
 
-1541466995 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\fcfs_scheduler.h
+1542433409 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\fcfs_scheduler.h
 	<iostream>
 	<queue>
 	<algorithm>
+	<vector>
 	"Process.h"
+	"Interval.h"
+	"Statistics.h"
+	"processInfo.h"
+
+1542432894 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\statistics.h
+	<vector>
+	"Interval.h"
+	"processInfo.h"
+
+1542421072 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\interval.h
+
+1542432979 source:a:\projects\codeblocks_projects\os_miniproject\os_miniproject\src\statistics.cpp
+	"Statistics.h"
+
+1542432673 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\processinfo.h
 

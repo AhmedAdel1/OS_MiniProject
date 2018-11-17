@@ -1,5 +1,6 @@
 #include <vector>
 #include "Interval.h"
+#include "processInfo.h"
 using namespace std;
 
 #ifndef STATISTICS_H_
@@ -18,6 +19,9 @@ public:
 	const vector<Interval>& getGraphIntervals() const;
 	void setGraphIntervals(const vector<Interval>& graphIntervals);
 
+	const vector<processInfo>& getProcInfoVector() const;
+	void setProcInfoVector(const vector<processInfo>& processInfoVec);
+
 	const vector<double>& getTurnaroundTime() const;
 	void setTurnaroundTime(const vector<double>& turnaroundTime);
 
@@ -34,6 +38,7 @@ private:
 	vector<double> turnaroundTime;
 	vector<double> waitingTime;
 	vector<double> weightedWaitingTime;
+	vector<processInfo> procInfoVector;
 	double avgTurnaroundTime;
 	double avgWeightedWaitingTime;
 

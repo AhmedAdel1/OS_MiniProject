@@ -21,12 +21,12 @@ double Process::getPriority()
     return priority;
 }
 
-unsigned int Process::getArrivalTime()
+double Process::getArrivalTime()
 {
     return arrivalTime;
 }
 
-unsigned int Process::getBurstTime()
+double Process::getBurstTime()
 {
     return burstTime;
 }
@@ -43,12 +43,12 @@ void Process::setPriority(double pr)
     priority = pr;
 }
 
-void Process::setArrivalTime(unsigned int arTime)
+void Process::setArrivalTime(double arTime)
 {
     arrivalTime = arTime;
 }
 
-void Process::setBurstTime(unsigned int brTime)
+void Process::setBurstTime(double brTime)
 {
     burstTime = brTime;
 }
@@ -74,12 +74,12 @@ void Process::Schedule()        /// move from READY state to RUNNING state.
     state = RUNNING;
 }
 
-void Process::setRemainingTime(unsigned int RT)
+void Process::setRemainingTime(double RT)
 {
     remainingTime = RT;
 }
 
-unsigned int Process::getRemainingTime()
+double Process::getRemainingTime()
 {
     return remainingTime;
 }

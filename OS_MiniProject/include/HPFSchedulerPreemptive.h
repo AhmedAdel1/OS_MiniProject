@@ -7,15 +7,15 @@
 #include "Statistics.h"
 using namespace std;
 
-#ifndef HPFScheduler_H
-#define HPFScheduler_H
+#ifndef HPFSchedulerPreemptive_H
+#define HPFSchedulerPreemptive_H
 
 
-class HPFScheduler {
+class HPFSchedulerPreemptive {
 
 public:
-	HPFScheduler();
-	void schedule(Process processes[], int count, double contextTime,Statistics& s);
+	HPFSchedulerPreemptive();
+	Statistics schedule(Process processes[], int count, double contextTime);
 
 
 private:

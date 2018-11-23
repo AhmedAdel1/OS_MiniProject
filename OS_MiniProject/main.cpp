@@ -7,7 +7,8 @@
 #include "FCFS_Scheduler.h"
 #include "SRTN_Scheduler.h"
 #include "Statistics.h"
-
+#include "RoundRobin.h"
+#include "HPFScheduler.h"
 
 using namespace std;
 
@@ -28,14 +29,15 @@ int main(int argc, char** argv)
     Process* arr = new Process[Size];
     getProcesses(arr,Size,myFile);
 
-    for(unsigned long i =0; i<Size; i++)
-        cout << arr[i].getProcessID() << "\t" << arr[i].getArrivalTime() << "\t" << arr[i].getBurstTime() << "\t" << arr[i].getPriority() << "\t" << endl;
+    //for(unsigned long i =0; i<Size; i++)
+    //    cout << arr[i].getProcessID() << "\t" << arr[i].getArrivalTime() << "\t" << arr[i].getBurstTime() << "\t" << arr[i].getPriority() << "\t" << endl;
 
     std::sort(arr,arr+Size,comp);
 
     Statistics S;
-    ///FCFS_Scheduler FCFS(arr,Size,S);   /// S now has all the required statistics and graph intervals to be graphed later.
-    SRTN_Scheduler FCFS(arr,Size,S);
+    RoundRobinScheduler* hpf = new RoundRobinScheduler();
+    hpf->schedule(arr,Size,1,10,S);
+
 
     vector<Interval> I = S.getGraphIntervals();
     vector<processInfo> PI = S.getProcInfoVector();
@@ -57,6 +59,7 @@ int main(int argc, char** argv)
 
     myFile.close();
 
+    system("/usr/bin/python plot_intervals.py");
     return 0;
 }
 

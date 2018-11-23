@@ -1,14 +1,14 @@
-#include "HPFScheduler.h"
+#include "HPFSchedulerPreemptive.h"
 
-HPFScheduler::HPFScheduler() {
+HPFSchedulerPreemptive::HPFSchedulerPreemptive() {
 }
 
-void HPFScheduler::schedule(Process arr[], int count,double contextTime,Statistics & s) {
+Statistics HPFSchedulerPreemptive::schedule(Process arr[], int count,double contextTime) {
 
 	myStatistics.clearStatistics();
 
 	if (count <= 0)
-		return;
+		return myStatistics;
 
 	//set context switch time
 	this->contextTime = contextTime;
@@ -34,8 +34,8 @@ void HPFScheduler::schedule(Process arr[], int count,double contextTime,Statisti
 
 	for (int i = 0; i < count; ++i) {
 
-		//Waiting Time = TurnAround - Running Time
-		waitingTime[i] = turnAround[i] - arr[i].getBurstTime();
+		//Waiting Time = TurnAround - Arrival Time
+		waitingTime[i] = turnAround[i] - arr[i].getArrivalTime();
 
 		//Weighted Waiting Time = (Waiting Time)/(Running Time)
 		weightedWaitingTime[i] = waitingTime[i]/arr[i].getBurstTime();
@@ -59,10 +59,11 @@ void HPFScheduler::schedule(Process arr[], int count,double contextTime,Statisti
 		delete processes[i];
 	delete processes;
 
-	s =  myStatistics;
+	return myStatistics;
 }
 
-void HPFScheduler::scheduleUtility(Process* processes[], int count,double contextTime) {
+void HPFSchedulerPreemptive::scheduleUtility(Process* processes[], int count,
+		double contextTime) {
 	//clear ready queue and fill it with the processes
 	readyQueue.assign(processes, processes + count);
 
@@ -81,6 +82,7 @@ void HPFScheduler::scheduleUtility(Process* processes[], int count,double contex
 				return p1->getProcessID() > p2->getProcessID();
 			});
 
+	unsigned long currentProcessID = 0;
 	while (!pq.empty()) //remove old values from priority queue ( if there's any )
 		pq.pop();
 
@@ -88,50 +90,65 @@ void HPFScheduler::scheduleUtility(Process* processes[], int count,double contex
 
 	//current process reference
 	Process* currentProcess = NULL;
-    unsigned long currentProcessID = 0;
 
 	double inCPUTime = 0; //how long this process is being processed
-
-	//While there's element to be scheduled (waiting for it's turn or will arrive soon)
 	while (!pq.empty() || !readyQueue.empty()) {
-
-		//if elements arrived at ready queue
-		while (!readyQueue.empty()&& currentTime >= readyQueue.back()->getArrivalTime())
-		{
+		if (!readyQueue.empty()
+				&& currentTime > readyQueue.back()->getArrivalTime()) //if elements arrived at ready queue
+						{
 			pq.push(readyQueue.back());
 			readyQueue.pop_back();
 		}
 
-		if (!pq.empty()) { //there's element to be schedule
+		if (!pq.empty()) { //there's element to be scheduled
+			if (currentProcessID == pq.top()->getProcessID()) { //current process is under scheduling(no one arrived with higher priority)
+
 				currentProcess = pq.top();
-                currentProcessID = currentProcess->getProcessID();
 
-				pq.pop();
-
-                inCPUTime = 0;
 				currentTime += TIMESTAMP;
 				inCPUTime += TIMESTAMP;
 
-				//process it in the cpu
-				while (inCPUTime < currentProcess->getBurstTime()) {
-					inCPUTime += TIMESTAMP;
+				//if the process is done, remove it from cpu
+				if (currentProcess->getBurstTime() <= 0) {
+
+					turnAround[currentProcessID - 1] = currentTime
+							- currentProcess->getArrivalTime();
+					pq.pop();
+
+					Interval processInterval = Interval(currentTime - inCPUTime,
+							currentTime, currentProcessID);
+					graphIntervals.push_back(processInterval);
+
+					//Context switch
+					double contextElapsedTime = 0;
+					while (contextElapsedTime < contextTime) {
+						contextElapsedTime += TIMESTAMP;
+						currentTime += TIMESTAMP;
+					}
+					currentProcessID = 0;
+				} else { //the process run for some time, decrease needed time
+					currentProcess->setBurstTime(
+							currentProcess->getBurstTime() - TIMESTAMP);
 					currentTime += TIMESTAMP;
 				}
 
-				turnAround[currentProcessID - 1] = currentTime- currentProcess->getArrivalTime();
-
-
-				Interval processInterval = Interval(currentTime - inCPUTime,currentTime, currentProcessID);
-				graphIntervals.push_back(processInterval);
-
-				//Context switch
-				double contextElapsedTime = 0;
-				while (contextElapsedTime < contextTime) {
-					contextElapsedTime += TIMESTAMP;
-					currentTime += TIMESTAMP;
+			} else {
+				//you took another process place
+				if (currentProcessID != 0) {
+					Interval processInterval = Interval(currentTime - inCPUTime,
+							currentTime, currentProcessID);
+					graphIntervals.push_back(processInterval);
+					//Context switch
+					double contextElapsedTime = 0;
+					while (contextElapsedTime < contextTime) {
+						contextElapsedTime += TIMESTAMP;
+						currentTime += TIMESTAMP;
+					}
 				}
-                processInterval = Interval(currentTime - contextElapsedTime,currentTime, -1);
-				graphIntervals.push_back(processInterval);
+				inCPUTime = 0;
+				currentProcessID = pq.top()->getProcessID();
+				currentTime += TIMESTAMP;
+			}
 		} else { //wait for new process to arrive
 			currentTime += TIMESTAMP;
 		}

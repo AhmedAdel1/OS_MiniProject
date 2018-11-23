@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <chrono>
+#include <cstdio>
 using namespace std;
 
 
@@ -76,7 +77,7 @@ int main(int argc, char* argv[]) {
 		priority = priorityGenerator(priorityEngine);
 
 
-		cout << i << " " << arrivalTime << " " << burstTime << " " << priority << endl;
+		printf("%d %.5lf %.5lf %d\n",i,arrivalTime,burstTime,priority);
 	}
 	return 0;
 }

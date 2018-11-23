@@ -3,12 +3,12 @@
 RoundRobinScheduler::RoundRobinScheduler() {
 }
 
-Statistics RoundRobinScheduler::schedule(Process arr[], int count,double contextTime,double quantumTime) {
+void RoundRobinScheduler::schedule(Process arr[], int count,double contextTime,double quantumTime, Statistics&  s) {
 
 	myStatistics.clearStatistics();
 
 	if (count <= 0)
-		return myStatistics;
+		return;
 
 	//set context switch time
 	this->contextTime = contextTime;
@@ -34,8 +34,8 @@ Statistics RoundRobinScheduler::schedule(Process arr[], int count,double context
 
 	for (int i = 0; i < count; ++i) {
 
-		//Waiting Time = TurnAround - Arrival Time
-		waitingTime[i] = turnAround[i] - arr[i].getArrivalTime();
+		//Waiting Time = TurnAround - Burst Time
+		waitingTime[i] = turnAround[i] - arr[i].getBurstTime();
 
 		//Weighted Waiting Time = (Waiting Time)/(Running Time)
 		weightedWaitingTime[i] = waitingTime[i]/arr[i].getBurstTime();
@@ -59,7 +59,7 @@ Statistics RoundRobinScheduler::schedule(Process arr[], int count,double context
 		delete processes[i];
 	delete processes;
 
-	return myStatistics;
+	s = myStatistics;
 }
 
 void RoundRobinScheduler::scheduleUtility(Process* processes[], int count,double contextTime, double quantumTime) {
@@ -87,7 +87,7 @@ void RoundRobinScheduler::scheduleUtility(Process* processes[], int count,double
 	double currentTime = 0; //current time stamp
 	double inCPUTime = 0; //how long this process is being processed
 	while (!q.empty() || !readyQueue.empty()) {
-		if (!readyQueue.empty()
+		while (!readyQueue.empty()
 				&& currentTime > readyQueue.back()->getArrivalTime()) //if elements arrived at ready queue
 						{
 			q.push(readyQueue.back());
@@ -118,17 +118,20 @@ void RoundRobinScheduler::scheduleUtility(Process* processes[], int count,double
 						currentProcess->setBurstTime(currentProcess->getBurstTime() - TIMESTAMP);
 						q.push(currentProcess);
 					}
+					//If it's finished
 					else{
 						turnAround[currentProcessID-1] = currentTime - currentProcess->getArrivalTime();
 					}
 
-					double contextElapsedTime = 0;
+                    double contextElapsedTime = 0;
 
-					//wait for context switch
-					while (!q.empty() && contextElapsedTime < contextTime) {
-						contextElapsedTime += TIMESTAMP;
-						currentTime += TIMESTAMP;
-					}
+                    //wait for context switch
+                    while (contextElapsedTime < contextTime) {
+                        contextElapsedTime += TIMESTAMP;
+                        currentTime += TIMESTAMP;
+                    }
+                    processInterval = Interval(currentTime-contextElapsedTime,currentTime,-1);
+                    graphIntervals.push_back(processInterval);
 					currentProcessID = 0;
 
 				} else { //update needed time

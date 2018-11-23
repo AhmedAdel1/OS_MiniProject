@@ -14,7 +14,7 @@ class RoundRobinScheduler {
 
 public:
 	RoundRobinScheduler();
-	Statistics schedule(Process processes[], int count, double contextTime,double quantumTime);
+	void schedule(Process processes[], int count, double contextTime,double quantumTime,Statistics& s);
 
 private:
 	//Utility function that does scheduling

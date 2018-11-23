@@ -21,6 +21,7 @@ FCFS_Scheduler::FCFS_Scheduler(Process* arr, unsigned long Size, Statistics& Sta
     **/
 
     time = 0;
+    double beginTime,endTime;
 
     while(!readyQueue.empty())
     {
@@ -31,11 +32,16 @@ FCFS_Scheduler::FCFS_Scheduler(Process* arr, unsigned long Size, Statistics& Sta
         /// if reached here, then the first element in the queue starts now.
         /// in this algorithm, we run the entire process until it's done.
 
+        beginTime = time;
         time += temp.getBurstTime();
-
+        endTime = time;
         /// after running, store its interval in the vector allIntervals to graph later.
-        Interval Inter(time-TIMESTAMP,time,temp.getProcessID());
+        Interval Inter(beginTime,endTime,temp.getProcessID());
         allIntervals.push_back(Inter);
+
+        time += CONTEXT_TIME;
+        Interval ContextInter(endTime,endTime + CONTEXT_TIME,-1);      /// pushing the context switching interval.
+        allIntervals.push_back(ContextInter);
 
         /// we need to calculate and store its : waiting time, turnaround time, weighted turnaround time.
         processInfo PI;

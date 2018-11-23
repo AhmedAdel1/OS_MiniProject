@@ -10,51 +10,76 @@ SRTN_Scheduler::SRTN_Scheduler(Process* arr, unsigned long Size, Statistics& Sta
 
     time = 0;
 
-    double Min;
-    int minIndex;
+    double tempRem;     /// to determine the smallest remaining time.
+
     while(!(readyQueue.empty() && running.empty()))     /// to finish all the scheduling, both ready and running processes must be empty.
     {
         if(!readyQueue.empty() && readyQueue[0].getArrivalTime() <= time)       /// if the first ready process time arrived.
         {
             /// move it from ready to running.
-            running.push_back(readyQueue[0]);
+            Process temp = readyQueue[0];
             readyQueue.erase(readyQueue.begin());
+
+            /// we put it in its right place (where its remaining time is smallest in the vector)
+
+            tempRem = temp.getRemainingTime();
+            if(running.empty() || (!running.empty() && running.back().getRemainingTime() < tempRem))
+                running.push_back(temp);
+            else
+            {
+                int i;
+                for(i=0; i<running.size(); i++)     /// get the minimum remaining time of the running processes (to run it next).
+                {
+                        if(running[i].getRemainingTime() > tempRem)
+                    {
+                        running.insert(running.begin() + i,temp);
+                        break;
+                    }
+                }
+            }
+
+
         }
 
         if(!running.empty())        /// if there're some running processes.
         {
-            Min = running[0].getRemainingTime();
-            minIndex = 0;
-            for(int i=1; i<running.size(); i++)     /// get the minimum remaining time of the running processes (to run it next).
-            {
-                if(running[i].getRemainingTime() < Min)
-                {
-                    Min = running[i].getRemainingTime();
-                    minIndex = i;
-                }
-            }
-            running[minIndex].setRemainingTime(Min-TIMESTAMP);      /// now it runs for TIMESTAMP amount of time.
+            running[0].setRemainingTime(running[0].getRemainingTime()-TIMESTAMP);      /// now it runs for TIMESTAMP amount of time.
 
-            if(allIntervals.back().processID != running[minIndex].getProcessID())
+            if(!allIntervals.empty())
             {
-                Interval I(time,time+TIMESTAMP,running[minIndex].getProcessID());
+                if(allIntervals.back().processID != running[0].getProcessID())
+                {
+                    Interval ContextInterv1(time,time+CONTEXT_TIME,-1);
+                    allIntervals.push_back(ContextInterv1);
+                    time += CONTEXT_TIME;
+                    Interval I(time,time+TIMESTAMP,running[0].getProcessID());
+                    allIntervals.push_back(I);
+                }
+                else
+                    allIntervals.back().r += TIMESTAMP;
+            }
+            else{
+                Interval ContextInterv(time,time+CONTEXT_TIME,-1);
+                allIntervals.push_back(ContextInterv);
+                time += CONTEXT_TIME;
+
+                Interval I(time,time+TIMESTAMP,running[0].getProcessID());
                 allIntervals.push_back(I);
             }
-            else
-                allIntervals.back().r += TIMESTAMP;
 
-            if(running[minIndex].getRemainingTime() <= 0)      /// if the process finished
+            if(running[0].getRemainingTime() <= 0)      /// if the process finished
             {
                  /// we need to calculate and store its : waiting time, turnaround time, weighted turnaround time.
                 processInfo PI;
-                PI.ID = running[minIndex].getProcessID();
-                PI.TAT = time - running[minIndex].getArrivalTime();
-                PI.waitingTime = PI.TAT - running[minIndex].getBurstTime();
-                PI.wieghtedTAT = PI.TAT / running[minIndex].getBurstTime();
+                PI.ID = running[0].getProcessID();
+                PI.TAT = time - running[0].getArrivalTime();
+                PI.waitingTime = PI.TAT - running[0].getBurstTime();
+                PI.wieghtedTAT = PI.TAT / running[0].getBurstTime();
 
                 finishedVector.push_back(PI);
 
-                running.erase(running.begin() + minIndex);
+                running.erase(running.begin());
+
             }
         }
         time += TIMESTAMP;

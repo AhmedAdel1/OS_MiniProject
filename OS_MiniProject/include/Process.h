@@ -11,6 +11,8 @@
 #define     QUANTUM     10      /// 10 seconds for example
 
 #define		TIMESTAMP	0.000001
+
+#define CONTEXT_TIME    0.001000
 /// ///////////////////////////////////
 
 class Process

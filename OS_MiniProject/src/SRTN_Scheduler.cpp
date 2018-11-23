@@ -1,6 +1,6 @@
 #include "SRTN_Scheduler.h"
 
-SRTN_Scheduler::SRTN_Scheduler(Process* arr, unsigned long Size, Statistics& Stat)
+SRTN_Scheduler::SRTN_Scheduler(Process* arr, unsigned long Size,double contextTime, Statistics& Stat)
 {
     vector<Interval> allIntervals;      /// this vector contains all the processed intervals after finishing all the processes.
                                         /// this vector will be graphed after scheduling.
@@ -49,9 +49,9 @@ SRTN_Scheduler::SRTN_Scheduler(Process* arr, unsigned long Size, Statistics& Sta
             {
                 if(allIntervals.back().processID != running[0].getProcessID())
                 {
-                    Interval ContextInterv1(time,time+CONTEXT_TIME,-1);
+                    Interval ContextInterv1(time,time+contextTime,-1);
                     allIntervals.push_back(ContextInterv1);
-                    time += CONTEXT_TIME;
+                    time += contextTime;
                     Interval I(time,time+TIMESTAMP,running[0].getProcessID());
                     allIntervals.push_back(I);
                 }
@@ -59,9 +59,9 @@ SRTN_Scheduler::SRTN_Scheduler(Process* arr, unsigned long Size, Statistics& Sta
                     allIntervals.back().r += TIMESTAMP;
             }
             else{
-                Interval ContextInterv(time,time+CONTEXT_TIME,-1);
+                Interval ContextInterv(time,time+contextTime,-1);
                 allIntervals.push_back(ContextInterv);
-                time += CONTEXT_TIME;
+                time += contextTime;
 
                 Interval I(time,time+TIMESTAMP,running[0].getProcessID());
                 allIntervals.push_back(I);
@@ -87,5 +87,19 @@ SRTN_Scheduler::SRTN_Scheduler(Process* arr, unsigned long Size, Statistics& Sta
 
     Stat.setProcInfoVector(finishedVector);
     Stat.setGraphIntervals(allIntervals);
+
+
+    double AvgTAT = 0;
+    double AvgWeightedTAT = 0;
+    for(int i = 0; i < finishedVector.size(); i++)
+    {
+        AvgTAT += finishedVector[i].TAT;
+        AvgWeightedTAT += finishedVector[i].wieghtedTAT;
+    }
+    AvgTAT/=Size;
+    AvgWeightedTAT/=Size;
+    Stat.setAvgTurnaroundTime(AvgTAT);
+    Stat.setAvgWeightedWaitingTime(AvgWeightedTAT);
+
 }
 

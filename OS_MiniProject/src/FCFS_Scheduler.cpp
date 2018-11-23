@@ -1,6 +1,6 @@
 #include "FCFS_Scheduler.h"
 
-FCFS_Scheduler::FCFS_Scheduler(Process* arr, unsigned long Size, Statistics& Stat)
+FCFS_Scheduler::FCFS_Scheduler(Process* arr, unsigned long Size,double contextTime, Statistics& Stat)
 {
     vector<Interval> allIntervals;      /// this vector contains all the processed intervals after finishing all the processes.
                                         /// this vector will be graphed after scheduling.
@@ -39,8 +39,8 @@ FCFS_Scheduler::FCFS_Scheduler(Process* arr, unsigned long Size, Statistics& Sta
         Interval Inter(beginTime,endTime,temp.getProcessID());
         allIntervals.push_back(Inter);
 
-        time += CONTEXT_TIME;
-        Interval ContextInter(endTime,endTime + CONTEXT_TIME,-1);      /// pushing the context switching interval.
+        time += contextTime;
+        Interval ContextInter(endTime,endTime + contextTime,-1);      /// pushing the context switching interval.
         allIntervals.push_back(ContextInter);
 
         /// we need to calculate and store its : waiting time, turnaround time, weighted turnaround time.
@@ -61,5 +61,17 @@ FCFS_Scheduler::FCFS_Scheduler(Process* arr, unsigned long Size, Statistics& Sta
 
     Stat.setGraphIntervals(allIntervals);
     Stat.setProcInfoVector(finishedVector);
+
+    double AvgTAT = 0;
+    double AvgWeightedTAT = 0;
+    for(int i = 0; i < finishedVector.size(); i++)
+    {
+        AvgTAT += finishedVector[i].TAT;
+        AvgWeightedTAT += finishedVector[i].wieghtedTAT;
+    }
+    AvgTAT/=Size;
+    AvgWeightedTAT/=Size;
+    Stat.setAvgTurnaroundTime(AvgTAT);
+    Stat.setAvgWeightedWaitingTime(AvgWeightedTAT);
 }
 

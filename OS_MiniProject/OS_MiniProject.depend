@@ -77,3 +77,81 @@
 
 1542432673 a:\projects\codeblocks_projects\os_miniproject\os_miniproject\include\processinfo.h
 
+1542962566 source:/home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/src/FCFS_Scheduler.cpp
+	"FCFS_Scheduler.h"
+
+1542690992 /home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/include/FCFS_Scheduler.h
+	<iostream>
+	<queue>
+	<algorithm>
+	<vector>
+	"Process.h"
+	"Interval.h"
+	"Statistics.h"
+	"processInfo.h"
+
+1542968774 /home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/include/Process.h
+
+1542690844 /home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/include/Interval.h
+
+1542690992 /home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/include/Statistics.h
+	<vector>
+	"Interval.h"
+	"processInfo.h"
+
+1542690992 /home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/include/processInfo.h
+
+1542690844 source:/home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/src/HPFScheduler.cpp
+	"HPFScheduler.h"
+
+1542690844 /home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/include/HPFScheduler.h
+	<iostream>
+	<vector>
+	<queue>
+	<algorithm>
+	<chrono>
+	"Process.h"
+	"Statistics.h"
+
+1542690992 source:/home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/src/Process.cpp
+	"Process.h"
+
+1542690844 source:/home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/src/RoundRobin.cpp
+	"RoundRobin.h"
+
+1542690844 /home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/include/RoundRobin.h
+	<iostream>
+	<vector>
+	<queue>
+	<algorithm>
+	<chrono>
+	"Process.h"
+	"Statistics.h"
+
+1542969936 source:/home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/src/SRTN_Scheduler.cpp
+	"SRTN_Scheduler.h"
+
+1542690992 /home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/include/SRTN_Scheduler.h
+	<iostream>
+	<queue>
+	<algorithm>
+	<vector>
+	"Process.h"
+	"processInfo.h"
+	"Statistics.h"
+	"Interval.h"
+
+1542966023 source:/home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/main.cpp
+	<iostream>
+	<fstream>
+	<math.h>
+	<vector>
+	"Process.h"
+	"Interval.h"
+	"FCFS_Scheduler.h"
+	"SRTN_Scheduler.h"
+	"Statistics.h"
+
+1542690992 source:/home/ahmedadel/Desktop/OS_MiniProject/OS_MiniProject/src/Statistics.cpp
+	"Statistics.h"
+

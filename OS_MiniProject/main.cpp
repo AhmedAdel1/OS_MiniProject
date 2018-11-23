@@ -8,6 +8,7 @@
 #include "SRTN_Scheduler.h"
 #include "Statistics.h"
 
+
 using namespace std;
 
 void getProcesses(Process* arr,unsigned long Size,ifstream& myFile);
@@ -39,12 +40,22 @@ int main(int argc, char** argv)
     vector<Interval> I = S.getGraphIntervals();
     vector<processInfo> PI = S.getProcInfoVector();
 
+    double AvgTAT = 0;
+    double AvgWeightedTAT = 0;
     cout << "printing statistics \n";
     for(int i = 0; i < PI.size(); i++)
     {
-        cout << PI[i].ID << "\t" << PI[i].TAT << "\t"  << PI[i].waitingTime << "\t"  << PI[i].wieghtedTAT << endl;
+        AvgTAT += PI[i].TAT;
+        AvgWeightedTAT += PI[i].wieghtedTAT;
+        cout << "Process ID = " << PI[i].ID << "\tTurnAround Time = " << PI[i].TAT << "\tWaitingTime = "  << PI[i].waitingTime << "\tWeighted TurnAroundTime = "  << PI[i].wieghtedTAT << endl;
     }
-    ///graphIntervals(S.getGraphIntervals());
+    AvgTAT/=Size;
+    AvgWeightedTAT/=Size;
+    cout << "Average TAT = " << AvgTAT << "\t Average Weighted TAT = " << AvgWeightedTAT << endl;
+
+    graphIntervals(S.getGraphIntervals());
+
+    myFile.close();
 
     return 0;
 }
@@ -73,8 +84,20 @@ bool comp(Process p1, Process p2)
 void graphIntervals(vector<Interval> intervalsVector)
 {
     /// todo : graph all the intervals (with python API)
-    ///for(int i=0; i<intervalsVector.size(); i++)
-    ///{
-    ///    cout << intervalsVector[i].l << intervalsVector[i].r << intervalsVector[i].processID << endl;
-    ///}
+
+
+    ofstream myIntervalsFile;
+    myIntervalsFile.open("intervals.txt",ios::out);
+
+
+    for(int i=0; i<intervalsVector.size(); i++)
+    {
+        ///cout << intervalsVector[i].processID << "\t" << intervalsVector[i].l << endl;
+        ///cout << intervalsVector[i].processID << "\t" << intervalsVector[i].r << endl;
+
+        myIntervalsFile << intervalsVector[i].processID << "\t" << intervalsVector[i].l << endl;
+        myIntervalsFile << intervalsVector[i].processID << "\t" << intervalsVector[i].r << endl;
+    }
+
+    myIntervalsFile.close();
 }

@@ -35,16 +35,16 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/FCFS_Scheduler.h" />
-		<Unit filename="include/HPFScheduler.h" />
+		<Unit filename="include/Interval.h" />
 		<Unit filename="include/Process.h" />
-		<Unit filename="include/RoundRobin.h" />
 		<Unit filename="include/SRTN_Scheduler.h" />
+		<Unit filename="include/Statistics.h" />
+		<Unit filename="include/processInfo.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/FCFS_Scheduler.cpp" />
-		<Unit filename="src/HPFScheduler.cpp" />
 		<Unit filename="src/Process.cpp" />
-		<Unit filename="src/RoundRobin.cpp" />
 		<Unit filename="src/SRTN_Scheduler.cpp" />
+		<Unit filename="src/Statistics.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

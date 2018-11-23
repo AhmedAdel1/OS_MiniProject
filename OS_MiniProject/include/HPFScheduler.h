@@ -38,7 +38,7 @@ private:
 			int priority1 = p1->getPriority();
 			int priority2 = p2->getPriority();
 			if (priority1 == priority2)
-				return p1->getArrivalTime() > p2->getArrivalTime(); //priority queue is max heap, reverse operator to make it correct
+				return p1->getProcessID() > p2->getProcessID(); //priority queue is max heap, reverse operator to make it correct
 			else
 				return priority1 < priority2; //lowest priority will be in the end
 		}

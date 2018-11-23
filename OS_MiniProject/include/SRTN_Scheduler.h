@@ -15,7 +15,7 @@ using namespace std;
 class SRTN_Scheduler
 {
     public:
-        SRTN_Scheduler(Process* arr, unsigned long Size, Statistics& Stat);
+        SRTN_Scheduler(Process* arr, unsigned long Size,double contextTime, Statistics& Stat);
 
     private:
         vector<Process> readyQueue;      /// this vector has all the processes in the ready state sorted in descending order waiting for their turn

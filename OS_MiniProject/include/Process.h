@@ -12,7 +12,6 @@
 
 #define		TIMESTAMP	0.000001
 
-#define CONTEXT_TIME    0.001000
 /// ///////////////////////////////////
 
 class Process
@@ -50,7 +49,7 @@ class Process
         double priority;
         double arrivalTime;
         double burstTime;            /// time required for process to run.
-        double remainingTime;        /// the remaining run time for the process.
+        double remainingTime;        /// the remaining run time for the process.      double
 
 
 };

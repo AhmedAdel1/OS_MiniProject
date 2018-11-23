@@ -17,7 +17,7 @@ using namespace std;
 class FCFS_Scheduler
 {
     public:
-        FCFS_Scheduler(Process* arr, unsigned long Size, Statistics& Stat);
+        FCFS_Scheduler(Process* arr, unsigned long Size,double contextTime, Statistics& Stat);
 
     private:
         queue<Process> readyQueue;      /// this queue has all the processes in the ready state sorted in descending order waiting for their turn

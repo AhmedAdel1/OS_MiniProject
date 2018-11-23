@@ -12,58 +12,95 @@
 
 using namespace std;
 
-void getProcesses(Process* arr,unsigned long Size,ifstream& myFile);
+void getProcesses(Process* arr,unsigned long Size,double contextTime,ifstream& myFile);
 bool comp(Process p1, Process p2);
 
+void printStatistics(Statistics S);
 void graphIntervals(vector<Interval>);
 
 int main(int argc, char** argv)
 {
+    string fileName;
+    double contextSwitch = 0;
+    double timeQuantom = 0;
+
+    cout << "Please enter the input .txt file containing the processes (full path with extension : 'folder/example.txt'): " << endl;
+    cin >> fileName;
+    cout << "Please enter the context switching time in seconds : " << endl;
+    cin >> contextSwitch;
+
+    cout << "Please choose a process scheduler." << endl;
+    cout << "\tEnter 'h'for 'Non-Preemptive Highest Priority First. (HPF)'" << endl;
+    cout << "\tOr, Enter 'f'for 'First Come First Served. (FCFS)'" << endl;
+    cout << "\tOr, Enter 'r'for 'Round Robin with fixed time quantum. (RR)'" << endl;
+    cout << "\tOr, Enter 's'for 'Preemptive Shortest Remaining Time Next. (SRTN)" << endl;
+
     ifstream myFile;
-    myFile.open("output.txt",ios::in);
+    myFile.open(fileName,ios::in);
 
     unsigned long Size;
     myFile >> Size;        /// first line is the number of processes.
-    cout << Size << endl;
 
     Process* arr = new Process[Size];
-    getProcesses(arr,Size,myFile);
-
-    //for(unsigned long i =0; i<Size; i++)
-    //    cout << arr[i].getProcessID() << "\t" << arr[i].getArrivalTime() << "\t" << arr[i].getBurstTime() << "\t" << arr[i].getPriority() << "\t" << endl;
+    getProcesses(arr,Size,contextSwitch,myFile);
 
     std::sort(arr,arr+Size,comp);
 
     Statistics S;
-    RoundRobinScheduler* hpf = new RoundRobinScheduler();
-    hpf->schedule(arr,Size,1,10,S);
 
+    char choise;
+    cin >> choise;
 
-    vector<Interval> I = S.getGraphIntervals();
-    vector<processInfo> PI = S.getProcInfoVector();
-
-    double AvgTAT = 0;
-    double AvgWeightedTAT = 0;
-    cout << "printing statistics \n";
-    for(int i = 0; i < PI.size(); i++)
+    switch(choise)
     {
-        AvgTAT += PI[i].TAT;
-        AvgWeightedTAT += PI[i].wieghtedTAT;
-        cout << "Process ID = " << PI[i].ID << "\tTurnAround Time = " << PI[i].TAT << "\tWaitingTime = "  << PI[i].waitingTime << "\tWeighted TurnAroundTime = "  << PI[i].wieghtedTAT << endl;
+        case 'h':
+        case 'H':
+            {
+            /// Non-Preemptive Highest Priority First. (HPF)
+            HPFScheduler* HPF = new HPFScheduler();
+            HPF->schedule(arr,Size,contextSwitch,S);
+            break;
+            }
+        case 'f':
+        case 'F':
+            {
+            /// First Come First Served. (FCFS)
+            FCFS_Scheduler* FCFS = new FCFS_Scheduler(arr,Size,contextSwitch,S);
+            break;
+            }
+        case 'r':
+        case 'R':
+            {
+            /// Round Robin with fixed time quantum. (RR)
+            RoundRobinScheduler* hpf = new RoundRobinScheduler();
+            double quantomTime =0;
+            cout << "Please enter the quantom time : ";
+            cin >> quantomTime;
+            hpf->schedule(arr,Size,contextSwitch,quantomTime,S);
+            break;
+            }
+        case 's':
+        case 'S':
+            {
+            /// Preemptive Shortest Remaining Time Next. (SRTN)
+            SRTN_Scheduler* hpf = new SRTN_Scheduler(arr,Size,contextSwitch,S);
+            break;
+            }
+        default :
+            cout << "Wrong input!" << endl;
+            break;
+
     }
-    AvgTAT/=Size;
-    AvgWeightedTAT/=Size;
-    cout << "Average TAT = " << AvgTAT << "\t Average Weighted TAT = " << AvgWeightedTAT << endl;
 
     graphIntervals(S.getGraphIntervals());
 
     myFile.close();
 
-    system("/usr/bin/python plot_intervals.py");
+
     return 0;
 }
 
-void getProcesses(Process* arr,unsigned long Size,ifstream& myFile)
+void getProcesses(Process* arr,unsigned long Size,double contextTime,ifstream& myFile)
 {
     unsigned long prID;
     double prior,arrivTime,bursTime;
@@ -84,10 +121,33 @@ bool comp(Process p1, Process p2)
     return (p1.getArrivalTime() < p2.getArrivalTime());
 }
 
+void printStatistics(Statistics S)
+{
+    ofstream myStatsFile;
+    myStatsFile.open("finalStatistics.txt",ios::out);
+
+    vector<Interval> I = S.getGraphIntervals();
+    vector<processInfo> PI = S.getProcInfoVector();
+
+    double AvgTAT = 0;
+    double AvgWeightedTAT = 0;
+    cout << "Statistics \n";
+    for(int i = 0; i < PI.size(); i++)
+    {
+        AvgTAT += PI[i].TAT;
+        AvgWeightedTAT += PI[i].wieghtedTAT;
+        myStatsFile << "Process ID = " << PI[i].ID << "\tTurnAround Time = " << PI[i].TAT << "\tWaitingTime = "  << PI[i].waitingTime << "\tWeighted TurnAroundTime = "  << PI[i].wieghtedTAT << endl;
+    }
+    AvgTAT/=PI.size();
+    AvgWeightedTAT/=PI.size();
+    myStatsFile << "Average TAT = " << AvgTAT << "\t Average Weighted TAT = " << AvgWeightedTAT << endl;
+
+    myStatsFile.close();
+
+}
+
 void graphIntervals(vector<Interval> intervalsVector)
 {
-    /// todo : graph all the intervals (with python API)
-
 
     ofstream myIntervalsFile;
     myIntervalsFile.open("intervals.txt",ios::out);
@@ -103,4 +163,7 @@ void graphIntervals(vector<Interval> intervalsVector)
     }
 
     myIntervalsFile.close();
+
+    /// run the python script for plotting the intervals.
+    system("python3 plot_intervals.py");
 }

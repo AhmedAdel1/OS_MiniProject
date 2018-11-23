@@ -31,7 +31,6 @@ double Process::getBurstTime()
     return burstTime;
 }
 
-
 /// Setters
 void Process::setProcessID(unsigned long ID)
 {
@@ -52,6 +51,7 @@ void Process::setBurstTime(double brTime)
 {
     burstTime = brTime;
 }
+
 
 /// changing states
 void Process::Block()           /// move from RUNNING state to BLOCKED state.

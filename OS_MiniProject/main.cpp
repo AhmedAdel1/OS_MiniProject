@@ -133,7 +133,7 @@ void printStatistics(Statistics S)
     vector<processInfo> PI = S.getProcInfoVector();
 
     for(int i=0;i<PI.size();++i)
-        myOrderFile<<PI[i].ID<<endl;
+        myOrderFile<<I[i].processID<<endl;
 
     sort(PI.begin(),PI.end(),[](const processInfo& a1,const processInfo& a2){return a1.ID<a2.ID;});
     double AvgTAT = 0;

@@ -71,7 +71,7 @@ FCFS_Scheduler::FCFS_Scheduler(Process* arr, unsigned long Size,double contextTi
     }
     AvgTAT/=Size;
     AvgWeightedTAT/=Size;
-    Stat.setAvgTurnaroundTime(AvgTAT);
-    Stat.setAvgWeightedWaitingTime(AvgWeightedTAT);
+    //Stat.setAvgTurnaroundTime(AvgTAT);
+    //Stat.setAvgWeightedWaitingTime(AvgWeightedTAT);
 }
 

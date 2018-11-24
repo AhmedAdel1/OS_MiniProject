@@ -27,10 +27,8 @@ void HPFScheduler::schedule(Process arr[], int count,double contextTime,Statisti
 
 	vector<double> turnAround = myStatistics.getTurnaroundTime();
 	vector<double> waitingTime(count);
-	vector<double> weightedWaitingTime(count);
+	vector<double> weightedTurnAround(count);
 
-	double avgWeightedWaitingTime = 0;
-	double avgTurnAroundTime = 0;
 
 	for (int i = 0; i < count; ++i) {
 
@@ -38,26 +36,16 @@ void HPFScheduler::schedule(Process arr[], int count,double contextTime,Statisti
 		waitingTime[i] = turnAround[i] - arr[i].getBurstTime();
 
 		//Weighted Waiting Time = (Waiting Time)/(Running Time)
-		weightedWaitingTime[i] = waitingTime[i]/arr[i].getBurstTime();
+		weightedTurnAround[i] = turnAround[i]/arr[i].getBurstTime();
 
-
-		avgWeightedWaitingTime += weightedWaitingTime[i];
-
-		avgTurnAroundTime += turnAround[i];
 	}
 
-	avgTurnAroundTime /= count;
-	avgWeightedWaitingTime /= count;
-
 	myStatistics.setWaitingTime(waitingTime);
-	myStatistics.setWeightedWaitingTime(weightedWaitingTime);
-	myStatistics.setAvgTurnaroundTime(avgTurnAroundTime);
-	myStatistics.setAvgWeightedWaitingTime(avgWeightedWaitingTime);
-
+	myStatistics.setWeightedTurnAroundTime(weightedTurnAround);
 	vector<processInfo> processInfoVec;
 
 	for(int i=0; i<count; ++i)
-		processInfoVec.push_back(processInfo{i+1,waitingTime[i],turnAround[i],weightedWaitingTime[i]});
+		processInfoVec.push_back(processInfo{i+1,waitingTime[i],turnAround[i],weightedTurnAround[i]});
 
 	myStatistics.setProcInfoVector(processInfoVec);
 

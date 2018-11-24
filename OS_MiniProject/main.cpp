@@ -124,19 +124,26 @@ bool comp(Process p1, Process p2)
 void printStatistics(Statistics S)
 {
     ofstream myStatsFile;
+    ofstream myOrderFile;
+    myOrderFile.open("processOrder.txt",ios::out);
+
     myStatsFile.open("finalStatistics.txt",ios::out);
 
     vector<Interval> I = S.getGraphIntervals();
     vector<processInfo> PI = S.getProcInfoVector();
 
+    for(int i=0;i<PI.size();++i)
+        myOrderFile<<PI[i].ID<<endl;
+
+    sort(PI.begin(),PI.end(),[](const processInfo& a1,const processInfo& a2){return a1.ID<a2.ID;});
     double AvgTAT = 0;
     double AvgWeightedTAT = 0;
-    cout << "Statistics \n";
+    //cout << "Statistics \n";
     for(int i = 0; i < PI.size(); i++)
     {
         AvgTAT += PI[i].TAT;
         AvgWeightedTAT += PI[i].wieghtedTAT;
-        myStatsFile << "Process ID = " << PI[i].ID << "\tTurnAround Time = " << max(PI[i].TAT,0.) << "\tWaitingTime = "  << max(PI[i].waitingTime,0.) << "\tWeighted TurnAroundTime = "  << max(PI[i].wieghtedTAT,0.) << endl;
+        myStatsFile << "Process ID = " << PI[i].ID << "\tWaitingTime = "  << max(PI[i].waitingTime,0.) << "\tTurnAround Time = " << max(PI[i].TAT,0.)  << "\tWeighted TurnAroundTime = "  << max(PI[i].wieghtedTAT,0.) << endl;
     }
     if(PI.size()){
     AvgTAT/=PI.size();
@@ -144,6 +151,7 @@ void printStatistics(Statistics S)
     }
     myStatsFile << "Average TAT = " << max(AvgTAT,0.) << "\t Average Weighted TAT = " << max(AvgWeightedTAT,0.) << endl;
 
+    myOrderFile.close();
     myStatsFile.close();
 
 }

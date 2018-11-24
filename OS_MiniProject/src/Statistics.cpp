@@ -11,23 +11,6 @@ Statistics::Statistics() {
 	clearStatistics();
 }
 
-
-double Statistics::getAvgTurnaroundTime() const {
-	return avgTurnaroundTime;
-}
-
-void Statistics::setAvgTurnaroundTime(double avgTurnaroundTime) {
-	this->avgTurnaroundTime = avgTurnaroundTime;
-}
-
-double Statistics::getAvgWeightedWaitingTime() const {
-	return avgWeightedWaitingTime;
-}
-
-void Statistics::setAvgWeightedWaitingTime(double avgWeightedWaitingTime) {
-	this->avgWeightedWaitingTime = avgWeightedWaitingTime;
-}
-
 const vector<Interval>& Statistics::getGraphIntervals() const {
 	return graphIntervals;
 }
@@ -65,12 +48,12 @@ void Statistics::setWaitingTime(const vector<double>& waitingTime) {
 	this->waitingTime = waitingTime;
 }
 
-const vector<double>& Statistics::getWeightedWaitingTime() const {
-	return weightedWaitingTime;
+const vector<double>& Statistics::getWeightedTurnAroundTime() const {
+	return weightedTurnAroundTime;
 }
 
-void Statistics::setWeightedWaitingTime(const vector<double>& weightedWaitingTime) {
-	this->weightedWaitingTime = weightedWaitingTime;
+void Statistics::setWeightedTurnAroundTime(const vector<double>& weightedTurnAroundTime) {
+	this->weightedTurnAroundTime = weightedTurnAroundTime;
 }
 
 
@@ -79,9 +62,7 @@ void Statistics::clearStatistics() {
 	graphIntervals.clear();
 	turnaroundTime.clear();
 	waitingTime.clear();
-	weightedWaitingTime.clear();
+	weightedTurnAroundTime.clear();
 	procInfoVector.clear();
 
-	avgTurnaroundTime = 0;
-	avgWeightedWaitingTime = 0;
 }

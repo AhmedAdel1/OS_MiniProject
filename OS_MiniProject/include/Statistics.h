@@ -10,12 +10,6 @@ class Statistics {
 public:
 	Statistics();
 
-	double getAvgTurnaroundTime() const;
-	void setAvgTurnaroundTime(double avgTurnaroundTime);
-
-	double getAvgWeightedWaitingTime() const;
-	void setAvgWeightedWaitingTime(double avgWeightedWaitingTime);
-
 	const vector<Interval>& getGraphIntervals() const;
 	void setGraphIntervals(const vector<Interval>& graphIntervals);
 
@@ -28,8 +22,8 @@ public:
 	const vector<double>& getWaitingTime() const;
 	void setWaitingTime(const vector<double>& waitingTime);
 
-	const vector<double>& getWeightedWaitingTime() const;
-	void setWeightedWaitingTime(const vector<double>& weightedWaitingTime);
+	const vector<double>& getWeightedTurnAroundTime() const;
+	void setWeightedTurnAroundTime(const vector<double>& weightedTurnAroundTime);
 
 	void clearStatistics();
 private:
@@ -37,11 +31,8 @@ private:
 	vector<Interval> graphIntervals;
 	vector<double> turnaroundTime;
 	vector<double> waitingTime;
-	vector<double> weightedWaitingTime;
+	vector<double> weightedTurnAroundTime;
 	vector<processInfo> procInfoVector;
-	double avgTurnaroundTime;
-	double avgWeightedWaitingTime;
-
 };
 
 #endif /* STATISTICS_H_ */

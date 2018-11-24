@@ -10,7 +10,11 @@ f = open("intervals.txt", "r")
 for x in f:
 	ids.append(int(x.split()[0]))
 	intervals.append(round(float(x.split()[1]),2))
+ids.insert(0,-1)
+ids.insert(0,-1)
 
+intervals.insert(0,intervals[0])
+intervals.insert(0,0)
 #print(ids)
 #print(intervals)
 

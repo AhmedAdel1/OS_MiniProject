@@ -91,7 +91,7 @@ int main(int argc, char** argv)
             break;
 
     }
-
+    printStatistics(S);
     graphIntervals(S.getGraphIntervals());
 
     myFile.close();
@@ -136,11 +136,13 @@ void printStatistics(Statistics S)
     {
         AvgTAT += PI[i].TAT;
         AvgWeightedTAT += PI[i].wieghtedTAT;
-        myStatsFile << "Process ID = " << PI[i].ID << "\tTurnAround Time = " << PI[i].TAT << "\tWaitingTime = "  << PI[i].waitingTime << "\tWeighted TurnAroundTime = "  << PI[i].wieghtedTAT << endl;
+        myStatsFile << "Process ID = " << PI[i].ID << "\tTurnAround Time = " << max(PI[i].TAT,0.) << "\tWaitingTime = "  << max(PI[i].waitingTime,0.) << "\tWeighted TurnAroundTime = "  << max(PI[i].wieghtedTAT,0.) << endl;
     }
+    if(PI.size()){
     AvgTAT/=PI.size();
     AvgWeightedTAT/=PI.size();
-    myStatsFile << "Average TAT = " << AvgTAT << "\t Average Weighted TAT = " << AvgWeightedTAT << endl;
+    }
+    myStatsFile << "Average TAT = " << max(AvgTAT,0.) << "\t Average Weighted TAT = " << max(AvgWeightedTAT,0.) << endl;
 
     myStatsFile.close();
 

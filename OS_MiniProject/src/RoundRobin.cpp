@@ -54,6 +54,13 @@ void RoundRobinScheduler::schedule(Process arr[], int count,double contextTime,d
 	myStatistics.setAvgTurnaroundTime(avgTurnAroundTime);
 	myStatistics.setAvgWeightedWaitingTime(avgWeightedWaitingTime);
 
+	vector<processInfo> processInfoVec;
+
+	for(int i=0; i<count; ++i)
+		processInfoVec.push_back(processInfo{i+1,waitingTime[i],turnAround[i],weightedWaitingTime[i]});
+
+	myStatistics.setProcInfoVector(processInfoVec);
+
 	//Clean up
 	for (int i = 0; i < count; ++i)
 		delete processes[i];

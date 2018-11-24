@@ -1,0 +1,11 @@
+Process ID = 1	TurnAround Time = 5.77261	WaitingTime = 0	Weighted TurnAroundTime = 0
+Process ID = 2	TurnAround Time = 137.036	WaitingTime = 127.771	Weighted TurnAroundTime = 13.7897
+Process ID = 3	TurnAround Time = 56.7567	WaitingTime = 46.0454	Weighted TurnAroundTime = 4.29877
+Process ID = 4	TurnAround Time = 73.4263	WaitingTime = 62.6204	Weighted TurnAroundTime = 5.79502
+Process ID = 5	TurnAround Time = 38.5211	WaitingTime = 27.3407	Weighted TurnAroundTime = 2.44541
+Process ID = 6	TurnAround Time = 114.473	WaitingTime = 100.567	Weighted TurnAroundTime = 7.23225
+Process ID = 7	TurnAround Time = 87.6188	WaitingTime = 73.2371	Weighted TurnAroundTime = 5.09238
+Process ID = 8	TurnAround Time = 18.263	WaitingTime = 3.25407	Weighted TurnAroundTime = 0.216809
+Process ID = 9	TurnAround Time = 126.22	WaitingTime = 109.758	Weighted TurnAroundTime = 6.66727
+Process ID = 10	TurnAround Time = 101.486	WaitingTime = 79.6131	Weighted TurnAroundTime = 3.63977
+Average TAT = 75.9574	 Average Weighted TAT = 4.91774

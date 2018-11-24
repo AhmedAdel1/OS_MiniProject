@@ -80,6 +80,7 @@ void Statistics::clearStatistics() {
 	turnaroundTime.clear();
 	waitingTime.clear();
 	weightedWaitingTime.clear();
+	procInfoVector.clear();
 
 	avgTurnaroundTime = 0;
 	avgWeightedWaitingTime = 0;

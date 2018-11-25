@@ -19,9 +19,5 @@ This module implements the concept of scheduling processes. We implement 4 sched
 3. Round Robin with fixed time quantum. (RR)
 4. Preemptive Shortest Remaining Time Next. (SRTN)
 
-## How it works :
-
-** TBD **
-
 ## Contributers :
 Ahmed Adel - Ahmed Ibrahim

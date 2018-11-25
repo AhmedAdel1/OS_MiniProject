@@ -175,5 +175,9 @@ void graphIntervals(vector<Interval> intervalsVector)
     myIntervalsFile.close();
 
     /// run the python script for plotting the intervals.
+    /// incase python 2.7
+    system("python plot_intervals.py");
+
+    /// in case python 3
     system("python3 plot_intervals.py");
 }

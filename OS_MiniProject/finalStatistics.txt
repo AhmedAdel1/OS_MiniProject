@@ -1,11 +1,11 @@
-Process ID = 1	WaitingTime = 0	TurnAround Time = 5.77261	Weighted TurnAroundTime = 1
-Process ID = 2	WaitingTime = 123.271	TurnAround Time = 132.536	Weighted TurnAroundTime = 14.3041
-Process ID = 3	WaitingTime = 44.5454	TurnAround Time = 55.2567	Weighted TurnAroundTime = 5.15873
-Process ID = 4	WaitingTime = 60.6204	TurnAround Time = 71.4263	Weighted TurnAroundTime = 6.60993
-Process ID = 5	WaitingTime = 26.3407	TurnAround Time = 37.5211	Weighted TurnAroundTime = 3.35597
-Process ID = 6	WaitingTime = 97.0674	TurnAround Time = 110.973	Weighted TurnAroundTime = 7.98055
-Process ID = 7	WaitingTime = 70.7371	TurnAround Time = 85.1188	Weighted TurnAroundTime = 5.91855
-Process ID = 8	WaitingTime = 2.75407	TurnAround Time = 17.763	Weighted TurnAroundTime = 1.1835
-Process ID = 9	WaitingTime = 105.758	TurnAround Time = 122.22	Weighted TurnAroundTime = 7.42429
-Process ID = 10	WaitingTime = 76.6131	TurnAround Time = 98.4862	Weighted TurnAroundTime = 4.50262
-Average TAT = 73.7074	 Average Weighted TAT = 5.74382
+Process ID = 1	WaitingTime = 32.3329	TurnAround Time = 36.6114	Weighted TurnAroundTime = 8.55704
+Process ID = 2	WaitingTime = 7.0343	TurnAround Time = 8.91743	Weighted TurnAroundTime = 4.73543
+Process ID = 3	WaitingTime = 3.41097	TurnAround Time = 4.29937	Weighted TurnAroundTime = 4.83946
+Process ID = 4	WaitingTime = 30.8249	TurnAround Time = 34.3012	Weighted TurnAroundTime = 9.86717
+Process ID = 5	WaitingTime = 1.05619	TurnAround Time = 2.88881	Weighted TurnAroundTime = 1.57633
+Process ID = 6	WaitingTime = 31.5369	TurnAround Time = 34.5559	Weighted TurnAroundTime = 11.4462
+Process ID = 7	WaitingTime = 38.2573	TurnAround Time = 43.3036	Weighted TurnAroundTime = 8.58127
+Process ID = 8	WaitingTime = 39.205	TurnAround Time = 45.6117	Weighted TurnAroundTime = 7.11945
+Process ID = 9	WaitingTime = 1.00172	TurnAround Time = 1.0579	Weighted TurnAroundTime = 18.8306
+Process ID = 10	WaitingTime = 41.4742	TurnAround Time = 48.0936	Weighted TurnAroundTime = 7.26556
+Average TAT = 25.9641	 Average Weighted TAT = 8.28186

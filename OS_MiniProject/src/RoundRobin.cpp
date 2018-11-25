@@ -32,12 +32,11 @@ void RoundRobinScheduler::schedule(Process arr[], int count,double contextTime,d
 
 
 	for (int i = 0; i < count; ++i) {
-
-		//Waiting Time = TurnAround - Running Time
-		waitingTime[i] = turnAround[i] - arr[i].getBurstTime();
+        //Waiting Time = TurnAround - Running Time
+		waitingTime[arr[i].getProcessID()-1] = turnAround[arr[i].getProcessID()-1] - arr[i].getBurstTime();
 
 		//Weighted Waiting Time = (Waiting Time)/(Running Time)
-		weightedTurnAround[i] = turnAround[i]/arr[i].getBurstTime();
+		weightedTurnAround[arr[i].getProcessID()-1] = turnAround[arr[i].getProcessID()-1]/arr[i].getBurstTime();
 
 	}
 

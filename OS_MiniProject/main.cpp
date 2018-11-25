@@ -43,7 +43,6 @@ int main(int argc, char** argv)
 
     Process* arr = new Process[Size];
     getProcesses(arr,Size,contextSwitch,myFile);
-
     std::sort(arr,arr+Size,comp);
 
     Statistics S;
@@ -132,7 +131,8 @@ void printStatistics(Statistics S)
     vector<Interval> I = S.getGraphIntervals();
     vector<processInfo> PI = S.getProcInfoVector();
 
-    for(int i=0;i<PI.size();++i)
+    for(int i=0;i<I.size();++i)
+        if(I[i].processID!=-1)
         myOrderFile<<I[i].processID<<endl;
 
     sort(PI.begin(),PI.end(),[](const processInfo& a1,const processInfo& a2){return a1.ID<a2.ID;});
